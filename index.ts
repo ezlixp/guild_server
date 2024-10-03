@@ -26,6 +26,10 @@ try {
     console.error("Failed to connect to database:", error);
 }
 
+app.head("/", (request: Request, response: Response) => {
+    response.send();
+});
+
 app.get("/guild/:tag", validatePassword, async (request: Request<{ tag: string }>, response: Response) => {
     try {
         const tag = request.params.tag;
