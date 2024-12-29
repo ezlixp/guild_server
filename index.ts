@@ -5,6 +5,7 @@ import validatePassword from "./security/passwordValidator.js";
 import dotenv from "dotenv";
 import GuildModel from "./models/guildModel.js";
 import NewGuildModel from "./models/newGuildModel.js";
+import validateAdminPassword from "./security/adminPasswordValidator.js";
 
 dotenv.config();
 
@@ -71,6 +72,28 @@ app.get(
         } catch (error) {
             response.status(500).send({ error: "Something went wrong processing your request." });
             console.error("getGuildByIdError:", error);
+        }
+    }
+);
+
+app.post(
+    "/guild",
+    validateAdminPassword,
+    async (
+        request: Request<{}, {}, { wynnGuildId: string; guildName: string; validationKey: string }>,
+        response: Response
+    ) => {
+        try {
+            const newGuild = new NewGuildModel({
+                wynnGuildId: request.body.wynnGuildId,
+                guildName: request.body.guildName,
+                validationKey: request.body.validationKey,
+            });
+            await newGuild.save();
+            response.send(newGuild);
+        } catch (error) {
+            response.status(500).send({ error: "Something went wrong processing your request." });
+            console.error("newGuildError:", error);
         }
     }
 );
