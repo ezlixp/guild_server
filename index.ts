@@ -80,13 +80,13 @@ app.post(
     "/guild",
     validateAdminPassword,
     async (
-        request: Request<{}, {}, { wynnGuildId: string; guildName: string; validationKey: string }>,
+        request: Request<{}, {}, { wynnGuildId: string; wynnGuildName: string; validationKey: string }>,
         response: Response
     ) => {
         try {
             const newGuild = new NewGuildModel({
                 wynnGuildId: request.body.wynnGuildId,
-                guildName: request.body.guildName,
+                wynnGuildName: request.body.wynnGuildName,
                 validationKey: request.body.validationKey,
             });
             await newGuild.save();
