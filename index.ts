@@ -4,6 +4,7 @@ import { connect } from "mongoose";
 import validatePassword from "./security/passwordValidator.js";
 import dotenv from "dotenv";
 import GuildModel from "./models/guildModel.js";
+import NewGuildModel from "./models/newGuildModel.js";
 
 dotenv.config();
 
@@ -39,17 +40,37 @@ app.get("/guild/:tag", validatePassword, async (request: Request<{ tag: string }
         });
 
         if (!result) {
-            response.status(404).send({
-                error: "Guild could not be found",
-            });
+            response.status(404).send({ error: "Guild with specified guild tag could not be found." });
             return;
         }
 
-        response.status(200).send(result);
+        response.send(result);
     } catch (error) {
         response.status(500).send({
             error: "Something went wrong processing your request.",
         });
-        console.error("getGuildError:", error);
+        console.error("getGuildByTagError:", error);
     }
 });
+
+app.get(
+    "/guild/id/:wynnGuildId",
+    validatePassword,
+    async (request: Request<{ wynnGuildId: string }>, response: Response) => {
+        try {
+            const wynnGuildId = request.params.wynnGuildId;
+
+            const result = await NewGuildModel.findOne({ wynnGuildId: wynnGuildId });
+
+            if (!result) {
+                response.status(404).send({ error: "Guild with specified guild id could not be found." });
+                return;
+            }
+
+            response.send(result);
+        } catch (error) {
+            response.status(500).send({ error: "Something went wrong processing your request." });
+            console.error("getGuildByIdError:", error);
+        }
+    }
+);

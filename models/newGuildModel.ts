@@ -1,0 +1,17 @@
+import mongoose, { Model, Schema } from "mongoose";
+
+interface IGuild {
+    validationKey: string;
+    wynnGuildId: string;
+    guildName: string;
+}
+
+const userSchema: Schema<IGuild> = new Schema({
+    validationKey: { type: String, required: true },
+    wynnGuildId: { type: String, required: true },
+    guildName: { type: String, required: true },
+});
+
+const NewGuildModel: Model<IGuild> = mongoose.connection.useDb("main").model("ValidationKey", userSchema);
+
+export default NewGuildModel;
